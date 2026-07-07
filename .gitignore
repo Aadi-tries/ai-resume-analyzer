@@ -1,0 +1,17 @@
+venvapp/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+pip-log.txt
+pip-delete-this-directory.txt
+.venv/
+devenv/
+.streamlit/secrets.toml
+cv.db
+Uploaded_Resumes/
+.ipynb_checkpoints/
+.DS_Store

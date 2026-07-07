@@ -1,0 +1,14 @@
+streamlit==1.12.2
+pandas==1.4.4
+PyMySQL==1.0.2
+geocoder==1.38.1
+geopy==2.2.0
+nltk==3.7
+plotly==5.10.0
+spacy==2.3.5
+blis==0.7.8
+thinc==7.4.5
+pdfminer3==2018.12.3.0
+docx2txt==0.8
+streamlit-tags==1.2.8
+Pillow==9.2.0
