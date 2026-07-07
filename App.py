@@ -616,19 +616,32 @@ def run():
         sec_token = secrets.token_urlsafe(12)
         host_name = socket.gethostname()
         ip_add = socket.gethostbyname(host_name)
-        dev_user = os.getlogin()
+        try:
+            dev_user = os.getlogin()
+        except OSError:
+            import getpass
+            try:
+                dev_user = getpass.getuser()
+            except Exception:
+                dev_user = "unknown"
         os_name_ver = platform.system() + " " + platform.release()
-        g = geocoder.ip('me')
-        latlong = g.latlng
-        geolocator = Nominatim(user_agent="http")
-        location = geolocator.reverse(latlong, language='en')
-        address = location.raw['address']
-        cityy = address.get('city', '')
-        statee = address.get('state', '')
-        countryy = address.get('country', '')  
-        city = cityy
-        state = statee
-        country = countryy
+        city = "unknown"
+        state = "unknown"
+        country = "unknown"
+        latlong = "unknown"
+        try:
+            g = geocoder.ip('me')
+            latlong = g.latlng
+            if latlong:
+                geolocator = Nominatim(user_agent="http")
+                location = geolocator.reverse(latlong, language='en')
+                if location and location.raw:
+                    address = location.raw.get('address', {})
+                    city = address.get('city', address.get('town', address.get('village', '')))
+                    state = address.get('state', '')
+                    country = address.get('country', '')
+        except Exception:
+            pass
 
         # ── Upload Card ──
         st.markdown('<hr class="section-divider">', unsafe_allow_html=True)
