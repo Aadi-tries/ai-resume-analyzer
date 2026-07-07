@@ -16,7 +16,10 @@ class ResumeParser(object):
         custom_regex=None
     ):
         nlp = spacy.load('en_core_web_sm')
-        custom_nlp = spacy.load(os.path.dirname(os.path.abspath(__file__)))
+        try:
+            custom_nlp = spacy.load(os.path.dirname(os.path.abspath(__file__)))
+        except Exception:
+            custom_nlp = None
         self.__skills_file = skills_file
         self.__custom_regex = custom_regex
         self.__matcher = Matcher(nlp.vocab)
@@ -36,7 +39,10 @@ class ResumeParser(object):
         self.__text_raw = utils.extract_text(self.__resume, '.' + ext)
         self.__text = ' '.join(self.__text_raw.split())
         self.__nlp = nlp(self.__text)
-        self.__custom_nlp = custom_nlp(self.__text_raw)
+        if custom_nlp:
+            self.__custom_nlp = custom_nlp(self.__text_raw)
+        else:
+            self.__custom_nlp = None
         self.__noun_chunks = list(self.__nlp.noun_chunks)
         self.__get_basic_details()
 
@@ -44,9 +50,12 @@ class ResumeParser(object):
         return self.__details
 
     def __get_basic_details(self):
-        cust_ent = utils.extract_entities_wih_custom_model(
-                            self.__custom_nlp
-                        )
+        if self.__custom_nlp:
+            cust_ent = utils.extract_entities_wih_custom_model(
+                                self.__custom_nlp
+                            )
+        else:
+            cust_ent = {}
         name = utils.extract_name(self.__nlp, matcher=self.__matcher)
         email = utils.extract_email(self.__text)
         mobile = utils.extract_mobile_number(self.__text, self.__custom_regex)
@@ -80,7 +89,9 @@ class ResumeParser(object):
         try:
             self.__details['degree'] = cust_ent['Degree']
         except KeyError:
-            pass
+            degree = utils.extract_education(self.__text_raw.split('\n'))
+            if degree:
+                self.__details['degree'] = degree
 
         return
 

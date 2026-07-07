@@ -21,11 +21,11 @@ import nltk
 nltk.download('stopwords')
 # libraries used to parse the pdf files
 from pyresparser import ResumeParser
-from pdfminer3.layout import LAParams, LTTextBox
-from pdfminer3.pdfpage import PDFPage
-from pdfminer3.pdfinterp import PDFResourceManager
-from pdfminer3.pdfinterp import PDFPageInterpreter
-from pdfminer3.converter import TextConverter
+from pdfminer.layout import LAParams, LTTextBox
+from pdfminer.pdfpage import PDFPage
+from pdfminer.pdfinterp import PDFResourceManager
+from pdfminer.pdfinterp import PDFPageInterpreter
+from pdfminer.converter import TextConverter
 from streamlit_tags import st_tags
 from PIL import Image
 # pre stored data for prediction purposes
