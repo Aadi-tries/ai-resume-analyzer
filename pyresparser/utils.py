@@ -333,19 +333,25 @@ def extract_email(text):
         except IndexError:
             return None
 
-
 def extract_name(nlp_text, matcher):
-    '''
-    Helper function to extract name from spacy nlp text
+    # Try named entity extraction first
+    for ent in nlp_text.ents:
+        if ent.label_ == "PERSON":
+            return ent.text
 
-    :param nlp_text: object of `spacy.tokens.doc.Doc`
-    :param matcher: object of `spacy.matcher.Matcher`
-    :return: string of full name
-    '''
-    try:
-        matcher.add('NAME', pattern)
-    except TypeError:
-        matcher.add('NAME', None, *pattern)
+    # Fallback: first PROPN sequence
+    for sent in nlp_text.sents:
+        name_tokens = []
+        for token in sent:
+            if token.pos_ == "PROPN" and not token.is_stop:
+                name_tokens.append(token.text)
+            elif name_tokens:
+                break
+        if name_tokens:
+            return " ".join(name_tokens)
+
+    return None
+
 
     matches = matcher(nlp_text)
 
